@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t lucpas/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run lucpas/react-test npm test -- --coverage
+
+after_success:
+  # Build production images
+  - docker build -t lucpas/fibo-client ./client
+  - docker build -t lucpas/fibo-nginx ./nginx
+  - docker build -t lucpas/fibo-server ./server
+  - docker build -t lucpas/fibo-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take images and push them to docker hub
+  - docker push lucpas/fibo-client
+  - docker push lucpas/fibo-nginx
+  - docker push lucpas/fibo-server
+  - docker push lucpas/fibo-worker
