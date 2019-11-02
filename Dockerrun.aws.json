@@ -25,6 +25,7 @@
     {
       "name": "nginx",
       "image": "lucpas/fibo-nginx",
+      "hostname": "nginx",
       "essential": true,
       "portMappings": [
         {
